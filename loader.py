@@ -2,11 +2,10 @@ import pandas as pd
 import os
 import tensorflow as tf
 from audiomentations import Compose, AddGaussianNoise, TimeStretch, PitchShift, Shift
-from preprocess import *
+from tf_helpers import *
 import numpy as np
 import tensorflow_io as tfio
 import librosa
-from librosa import mel_frequencies
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
@@ -31,54 +30,6 @@ hparams = HParams(
     pad=True,
     #
 )
-
-
-def mel_spec(spectrogram, hparams):
-    mel_matrix = tf.signal.linear_to_mel_weight_matrix(
-        num_mel_bins=hparams.num_mel_bins,
-        num_spectrogram_bins=int(hparams.n_fft/2)+1,
-        sample_rate=22050,
-        lower_edge_hertz=hparams.mel_lower_edge_hertz,
-        upper_edge_hertz=hparams.mel_upper_edge_hertz,
-        dtype=tf.dtypes.float32,
-        name=None,
-    )
-    print(mel_matrix.shape)
-    mel_f = mel_frequencies(
-        n_mels=hparams.num_mel_bins + 2,
-        fmin=hparams.mel_lower_edge_hertz,
-        fmax=hparams.mel_upper_edge_hertz,
-    )
-    print(mel_f.shape)
-    enorm = tf.dtypes.cast(
-        tf.expand_dims(tf.constant(2.0 / (mel_f[2 : hparams.num_mel_bins + 2] - mel_f[:hparams.num_mel_bins])), 0),
-        tf.float32)
-    print(enorm.shape)
-    mel_matrix = tf.multiply(mel_matrix, enorm)
-    mel_matrix = tf.divide(mel_matrix, tf.reduce_sum(mel_matrix, axis=0))
-    mel_spectrogram = tf.tensordot(spectrogram,mel_matrix, 1)
-    return mel_spectrogram
-
-def inv_mel_spec(mel_spectrogram, hparams):
-    mel_matrix = tf.signal.linear_to_mel_weight_matrix(
-        num_mel_bins=hparams.num_mel_bins,
-        num_spectrogram_bins=int(hparams.n_fft/2)+1,
-        sample_rate=22050,
-        lower_edge_hertz=hparams.mel_lower_edge_hertz,
-        upper_edge_hertz=hparams.mel_upper_edge_hertz,
-        dtype=tf.dtypes.float32,
-        name=None,
-    )
-    with np.errstate(divide="ignore", invalid="ignore"):
-        mel_inversion_matrix = tf.constant(
-            np.nan_to_num(
-                np.divide(mel_matrix.numpy().T, np.sum(mel_matrix.numpy(), axis=1))
-            ).T
-        )
-    mel_spectrogram_inv = tf.tensordot(mel_spectrogram,tf.transpose(mel_inversion_matrix), 1)
-    reconstructed_y_mel = inv_spectrogram_tensorflow(np.transpose(mel_spectrogram_inv), hparams)
-    
-    return reconstructed_y_mel
 
 def get_feature(audio):
     spectrogram = spectrogram_tensorflow(audio, hparams)
@@ -109,16 +60,6 @@ def get_dataset(csv, ds_dir=root_dir):
     dataset = tf.data.Dataset.from_tensor_slices((audio, midi))    
     return dataset
 
-def augment_audio(audio):
-    sr = 22050
-    augment = Compose([
-        AddGaussianNoise(min_amplitude=0.001, max_amplitude=0.15, p=0.5),
-        TimeStretch(min_rate=0.8, max_rate=1.25, p=0.5),
-        PitchShift(min_semitones=-4, max_semitones=4, p=0.5),
-        Shift(min_fraction=-0.5, max_fraction=0.5, p=0.5),
-    ])
-    return augment(audio)
-
 def load_audio(audio_filepath, midi_filepath):
     print("loading audio")
     audio = tf.io.read_file(audio_filepath)
@@ -126,10 +67,10 @@ def load_audio(audio_filepath, midi_filepath):
     audio = tfio.audio.resample(audio, 44100, 22050)
     audio = tf.reshape(audio, (22050 * 2, ))
     
-    spec_clean, spec_dirty = get_feature(audio), [] # mel_spec(augment_audio(audio))
+    spec_clean = get_feature(audio)
     paddings = tf.constant([[0, 3], [0,0]])
-    spec_clean, spec_dirty = tf.pad(spec_clean, paddings, "CONSTANT"), [] #tf.pad(spec_dirty, paddings, "CONSTANT")
-    spec_clean, spec_dirty = tf.expand_dims(spec_clean, -1), [] #tf.expand_dims(spec_dirty, -1)
+    spec_clean = tf.pad(spec_clean, paddings, "CONSTANT")
+    spec_clean = tf.expand_dims(spec_clean, -1)
     
     return spec_clean, audio_filepath
 
