@@ -7,7 +7,7 @@ with open("params.json") as file:
 
 generate_spectrograms_from_ds(
     ds_path="/home/jerms/data/maestro-v3.0.0", 
-    ds_filename="maestro-v3.0.0.csv", 
+    mapping_filename="maestro-v3.0.0.csv", 
     save_path="/home/jerms/disk1/spectrograms/aug", 
     transform_fn=mel_spec_from_audio,
     augment_fn=random_augmentations,

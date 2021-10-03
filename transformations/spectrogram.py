@@ -1,19 +1,19 @@
 import tensorflow as tf
 from normalize import normalize_spectrogram_tf, denormalize_spectrogram_tf
 from inversion import griffin_lim_tf
+from stft import stft_tf
 
 def spectrogram_tf(y, hparams):
-    D = _stft_tensorflow(y, hparams)
+    D = stft_tf(y, hparams)
     S = _amp_to_db_tensorflow(tf.abs(D)) - hparams.ref_level_db
-    return _normalize_tensorflow(S, hparams)
+    return normalize_spectrogram_tf(S, hparams)
 
 def inv_spectrogram_tf(spectrogram, hparams):
     """Converts spectrogram to waveform using librosa"""
     S = _db_to_amp_tensorflow(
-        normalize_spectrogram_tf(spectrogram, hparams) + hparams.ref_level_db
+        denormalize_spectrogram_tf(spectrogram, hparams) + hparams.ref_level_db
     )  # Convert back to linear
     return griffin_lim_tf(S ** hparams.power, hparams)  # Reconstruct phase
-
 
 # Helper Functions
 
