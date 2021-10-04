@@ -10,8 +10,11 @@ The output script that is intended to be modified with your paths is `main.py`.
 The code is structured as follows:
 
 `main.py` - Your entry point for using the software.  Change the directories and input functions as needed.
+
 `augmentations` - Audio augmentations prior to transformation.
+
 `tranformations` - Audio transformation to save to disk.  Usually FFT/Mel Spectrogram/STFT/Etc...
+
 `prefrontal.py` - Code responsible for iterating through the dataset, augmenting, transformating, and ultimately saving to disk.
 
 # Parameters

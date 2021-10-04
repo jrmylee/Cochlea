@@ -1,4 +1,4 @@
-from prefrontal import generate_spectrograms_from_ds
+from cochlea import generate_spectrograms_from_ds
 from augmentations.naive import random_augmentations
 from transformations.melspectrogram import mel_spec_from_audio
 
