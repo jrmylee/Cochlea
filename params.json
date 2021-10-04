@@ -1,7 +1,7 @@
 { 
     "win_length" : 2048,
     "n_fft" : 2048,
-    "hop_length" : 256,
+    "hop_length" : 512,
     "ref_level_db" : 50,
     "min_level_db" : -100,
     "num_mel_bins" : 256,
