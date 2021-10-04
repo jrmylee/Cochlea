@@ -1,8 +1,8 @@
-# PFC - Data Pipeline for Audio Transformations
+# Cochlea - Data Pipeline for Audio Transformations
 
 Intended as a one stop shop for audio transformations and output to local disk.
 
-PFC currently chunks audio into 2 second clips and transforms them using your transformation of choice, and saves them to a directory of your choosing.
+Cochlea currently chunks audio into 2 second clips and transforms them using your transformation of choice, and saves them to a directory of your choosing.
 
 The output script that is intended to be modified with your paths is `main.py`.
 
