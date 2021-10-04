@@ -24,6 +24,7 @@ def save_audio_transformation(file_path, save_path, transform_fn, augment_fn, hp
     if len(x) % chunk_length != 0:
         multiple = np.ceil(len(x) / chunk_length)
         pad_amount = chunk_length * multiple - len(x)
+        pad_amount = int(pad_amount)
         x = np.pad(x, (0, pad_amount), 'constant', constant_values=(0, 0))
 
     # extract song name
@@ -37,9 +38,8 @@ def save_audio_transformation(file_path, save_path, transform_fn, augment_fn, hp
         new_file_name = os.path.join(save_path, song_name + "-" + str(index))
         if not os.path.exists(new_file_name):
             y = x[i : i + 2*sr]
-            y = tf.convert_to_tensor(y)
             transformed_y = transform_fn(y, hparams)
-            np.save(new_file_name, transformed_y.numpy())
+            np.save(new_file_name, transformed_y)
     print(new_file_name)
 
 # Transforms each audio file in MAESTRO dataset into transformed files
@@ -54,4 +54,4 @@ def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, transfor
     
     for index, row in csv.iterrows():
         full_audio_path, full_midi_path = os.path.join(ds_path, row["audio_filename"]), os.path.join(ds_path, row["midi_filename"])
-        save_audio_transformation(full_audio_path, save_path, mel_spec_from_audio, augment_fn, hparams)
+        save_audio_transformation(full_audio_path, save_path, transform_fn, augment_fn, hparams)
