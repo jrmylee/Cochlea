@@ -12,13 +12,13 @@
 #SBATCH --nodes=1
 #
 # Specify number of tasks for use case (example):
-#SBATCH --ntasks-per-node=20
+#SBATCH --ntasks-per-node=1
 #
 # Processors per task:
 #SBATCH --cpus-per-task=1
 #
 # Wall clock limit:
-#SBATCH --time=00:01:00
+#SBATCH --time=00:00:15
 #
 ## Command(s) to run (example):
 python main.py
