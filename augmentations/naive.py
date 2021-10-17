@@ -6,10 +6,10 @@ from audiomentations import AddBackgroundNoise
 import pandas as pd 
 
 # impulse response lib 
-irlib_path = "/home/jerms/data/irlib/EchoThiefImpulseResponseLibrary/Venues"
+irlib_path = "/global/scratch/users/jrmylee/datasets/EchoThiefImpulseResponseLibrary/Venues"
 
 # Human Sounds
-esc_path = "/home/jerms/data/esc-50/ESC-50-master/audio"
+esc_path = "/global/scratch/users/jrmylee/datasets/ESC-50-master/audio"
 
 background_noise_filter = AddBackgroundNoise(esc_path)
 
@@ -38,8 +38,8 @@ def apply_background_sound(x, sounds, weight=0.1, sr=22050):
     return (1 - weight) * x + weight * noise
 
 def get_noises():
-    esc_path = "/home/jerms/data/esc-50/ESC-50-master/audio"
-    esc_csv = "/home/jerms/data/esc-50/ESC-50-master/meta/esc50.csv"
+    esc_path = "/global/scratch/users/jrmylee/datasets/ESC-50-master/audio"
+    esc_csv = "/global/scratch/users/jrmylee/datasets/ESC-50-master/meta/esc50.csv"
     esc_data = pd.read_csv(esc_csv)
     
     categories_of_interest = ["clapping", "footsteps", "coughing", "sneezing", "crying_baby", "breathing"]

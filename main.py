@@ -22,9 +22,9 @@ print("beginning preprocess")
 with open("params.json") as file:
     hparams = json.load(file, object_hook=lambda d: SimpleNamespace(**d))
     generate_spectrograms_from_ds(
-    ds_path="/home/jerms/data/maestro-v3.0.0", 
+    ds_path=hparams.ds_path, 
     mapping_filename="maestro-v3.0.0.csv", 
-    save_path="/home/jerms/disk1/stft_augmented", 
+    save_path=hparams.save_path, 
     transform_fn=stft_stacked,
     augment_fn=composed_aug,
     hparams=hparams)
