@@ -18,7 +18,7 @@
 #SBATCH --cpus-per-task=1
 #
 # Wall clock limit:
-#SBATCH --time=48:00:00
+#SBATCH --time=00:01:00
 #
 ## Command(s) to run (example):
 python main.py
