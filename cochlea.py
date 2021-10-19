@@ -3,6 +3,27 @@ import os
 import librosa
 import numpy as np
 import pandas as pd
+import tensorflow.compat.v1 as tf
+
+tf.disable_v2_behavior()
+
+def group_list(l, group_size):
+    """
+    :param l:           list
+    :param group_size:  size of each group
+    :return:            Yields successive group-sized lists from l.
+    """
+    arr = []
+    for i in range(0, len(l), group_size):
+        arr.append(np.array(l[i:i+group_size]))
+    return np.array(arr)
+
+def save_specgrams(specgrams, save_path, song_name):
+    for i in range(specgrams.shape[0]):
+        spec = specgrams[i, :, :, :]
+        save_file_path = os.path.join(save_path, song_name + "-" + str(i) + ".npy")
+        np.save(save_file_path, spec)
+
 
 # Splits a single audio clip into 2 second intervals, augments, and transforms it.  Saves resulting transformations to disk
 # params
@@ -11,38 +32,31 @@ import pandas as pd
 # transform_fn: transformation function, STFT, Mel Spectrogram, etc...
 # augment_fn: function to augment audio clip prior to transformation. Optional
 # sr: sample rate
-def save_audio_transformation(file_path, save_path, transform_fn, augment_fn, hparams):
+def audio_transformation(file_path, spec_helper, augment_fn, hparams):
     # extract song name
-    song_name = file_path.split("/")
-    song_name = song_name[len(song_name) - 1]
-    first_song_path = os.path.join(save_path, song_name + "-0.npy")
+    print("Loading ", song_name)
+    x, sr = librosa.load(file_path)
+    print("Loaded!")
     
-    if not os.path.exists(first_song_path):
-        print("Loading ", song_name)
-        x, sr = librosa.load(file_path)
-        print("Loaded!")
-        
-        # zero pad the file so we use the entire clip
-        chunk_length = 2 * sr
-        if len(x) % chunk_length != 0:
-            multiple = np.ceil(len(x) / chunk_length)
-            pad_amount = chunk_length * multiple - len(x)
-            pad_amount = int(pad_amount)
-            x = np.pad(x, (0, pad_amount), 'constant', constant_values=(0, 0))
+    # zero pad the file so we use the entire clip
+    chunk_length = 2 * sr
+    if len(x) % chunk_length != 0:
+        multiple = np.ceil(len(x) / chunk_length)
+        pad_amount = chunk_length * multiple - len(x)
+        pad_amount = int(pad_amount)
+        x = np.pad(x, (0, pad_amount), 'constant', constant_values=(0, 0))
 
-        # split in 2 second chunks and export to files 
-        for i in range(0, len(x), 2 * sr):
-            index = i // (2 * sr)
-            new_file_name = os.path.join(save_path, song_name + "-" + str(index))
-            if not os.path.exists(new_file_name):
-                y = x[i : i + 2*sr]
-                if augment_fn:
-                    y = augment_fn(y, sr=sr)
-                transformed_y = transform_fn(y, hparams)
-                np.save(new_file_name, transformed_y)
-        print(new_file_name)
-    else:
-        print(song_name, " exists!")
+    chunked_audio = group_list(x, chunk_length) # chunk audio into 2 second intervals
+
+    if augment_fn:
+        for i in range(chunked_audio.shape[0]):
+            chunked_audio[i, :] = augment_fn(chunked_audio[i, :], hparams)
+
+    chunked_audio = np.expand_dims(chunked_audio, 2)
+    with tf.Session() as sess:
+        input_tensor = tf.convert_to_tensor(chunked_audio)
+        specgrams = spec_helper.waves_to_melspecgrams(input_tensor).eval(session=sess)
+    return specgrams
 
 # Transforms each audio file in MAESTRO dataset into transformed files
 # params
@@ -54,6 +68,15 @@ def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, transfor
     csv_path = os.path.join(ds_path, mapping_filename)
     csv = pd.read_csv(csv_path)
     
+    helper = SpecgramsHelper(audio_length=44100, spec_shape=[128, 1024], overlap=0.75, sample_rate=22050, mel_downscale=1, ifreq=True, discard_dc=True)
+
     for index, row in csv.iterrows():
         full_audio_path, full_midi_path = os.path.join(ds_path, row["audio_filename"]), os.path.join(ds_path, row["midi_filename"])
-        save_audio_transformation(full_audio_path, save_path, transform_fn, augment_fn, hparams)
+
+        song_name = full_audio_path.split("/")
+        song_name = song_name[len(song_name) - 1]
+        first_song_path = os.path.join(save_path, song_name + "-0.npy")
+        
+        if not os.path.exists(first_song_path):
+            mel_specs = audio_transformation(full_audio_path, helper, augment_fn, hparams)
+            save_specgrams(mel_specs, save_path, song_name)
