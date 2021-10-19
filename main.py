@@ -1,14 +1,10 @@
 from cochlea import generate_spectrograms_from_ds
-from augmentations.naive import *
 from transformations.stft import stft_stacked
 import json
 from types import SimpleNamespace
 import random
 
 print("reading impulses")
-impulses = room_impulses()
-print("reading background noises!  Might take a min")
-background_noises = get_noises()
 
 def composed_aug(x, sr):
     x = apply_noise(x)
@@ -26,5 +22,5 @@ with open("params.json") as file:
     mapping_filename="maestro-v3.0.0.csv", 
     save_path=hparams.save_path, 
     transform_fn=stft_stacked,
-    augment_fn=composed_aug,
+    augment_fn=None,
     hparams=hparams)

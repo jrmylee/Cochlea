@@ -4,6 +4,7 @@ import librosa
 import numpy as np
 import pandas as pd
 import tensorflow.compat.v1 as tf
+from transformations.spec_helpers import *
 
 tf.disable_v2_behavior()
 
@@ -34,7 +35,7 @@ def save_specgrams(specgrams, save_path, song_name):
 # sr: sample rate
 def audio_transformation(file_path, spec_helper, augment_fn, hparams):
     # extract song name
-    print("Loading ", song_name)
+    print("Loading song")
     x, sr = librosa.load(file_path)
     print("Loaded!")
     
