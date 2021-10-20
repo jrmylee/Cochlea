@@ -56,7 +56,7 @@ def audio_transformation(file_path, spec_helper, augment_fn, hparams):
     chunked_audio = np.expand_dims(chunked_audio, 2)
     with tf.Session() as sess:
         input_tensor = tf.convert_to_tensor(chunked_audio)
-        specgrams = spec_helper.waves_to_melspecgrams(input_tensor).eval(session=sess)
+        specgrams = spec_helper.waves_to_specgrams(input_tensor).eval(session=sess)
     return specgrams
 
 # Transforms each audio file in MAESTRO dataset into transformed files
