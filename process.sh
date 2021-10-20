@@ -21,4 +21,5 @@
 #SBATCH --time=00:00:15
 #
 ## Command(s) to run (example):
+module load ml/tensorflow/2.5.0-py37
 python main.py

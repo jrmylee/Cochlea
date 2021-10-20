@@ -1,10 +1,10 @@
 import tensorflow as tf
 import os 
-import librosa
 import numpy as np
 import pandas as pd
 import tensorflow.compat.v1 as tf
 from transformations.spec_helpers import *
+from scipy.io import wavfile
 
 tf.disable_v2_behavior()
 
@@ -36,7 +36,7 @@ def save_specgrams(specgrams, save_path, song_name):
 def audio_transformation(file_path, spec_helper, augment_fn, hparams):
     # extract song name
     print("Loading song")
-    x, sr = librosa.load(file_path)
+    sr, x = wavfile.read(file_path)
     print("Loaded!")
     
     # zero pad the file so we use the entire clip
