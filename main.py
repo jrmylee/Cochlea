@@ -1,5 +1,4 @@
 from cochlea import generate_spectrograms_from_ds
-from transformations.stft import stft_stacked
 import json
 from types import SimpleNamespace
 import random
@@ -21,6 +20,6 @@ with open("params.json") as file:
     ds_path=hparams.ds_path, 
     mapping_filename="maestro-v3.0.0.csv", 
     save_path=hparams.save_path, 
-    transform_fn=stft_stacked,
+    transform_fn=None,
     augment_fn=None,
     hparams=hparams)
