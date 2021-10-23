@@ -104,6 +104,6 @@ def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, transfor
         first_song_path = os.path.join(save_path, song_name + "-0.npy")
         
         if not os.path.exists(first_song_path):
-            specs, angles = audio_transformation(full_audio_path, helper, augment_fn, hparams)
+            specs, angles = librosa_transformation(full_audio_path, augment_fn, hparams)
             save_specgrams(specs, save_path, song_name)
 
