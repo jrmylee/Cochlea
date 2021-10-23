@@ -21,10 +21,35 @@ def group_list(l, group_size):
 
 def save_specgrams(specgrams, save_path, song_name):
     for i in range(specgrams.shape[0]):
-        spec = specgrams[i, :, :, :]
+        spec = specgrams[i, :, :]
         save_file_path = os.path.join(save_path, song_name + "-" + str(i) + ".npy")
         np.save(save_file_path, spec)
 
+# Librosa Transformations
+def librosa_transformation(file_path, augment_fn, hparams):
+    print("Loading song")
+    x, sr = wavfile.read(file_path)
+    print("Loaded!")
+
+    chunk_length = 2048 * 20
+    if len(x) % chunk_length != 0:
+        multiple = np.ceil(len(x) / chunk_length)
+        pad_amount = chunk_length * multiple - len(x)
+        x = np.pad(x, (0, int(pad_amount)), 'constant', constant_values=(0, 0))
+
+    # split in 2 second chunks and export to files 
+    arr = []
+    angles = []
+    for i in range(0, len(x), 2048 * 20):
+        index = i // (2048 * 20)
+        y = x[i : i + 2048 * 20]
+        stft = librosa.stft(y)
+        mag = np.abs(stft)
+        angle = np.angle(stft)
+        arr.append(mag)
+        angles.append(angle)
+    
+    return np.array(arr), np.array(angles)
 
 # Splits a single audio clip into 2 second intervals, augments, and transforms it.  Saves resulting transformations to disk
 # params
@@ -36,7 +61,7 @@ def save_specgrams(specgrams, save_path, song_name):
 def audio_transformation(file_path, spec_helper, augment_fn, hparams):
     # extract song name
     print("Loading song")
-    sr, x = wavfile.read(file_path)
+    x, sr = librosa.load(file_path)
     print("Loaded!")
     
     # zero pad the file so we use the entire clip
@@ -69,7 +94,7 @@ def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, transfor
     csv_path = os.path.join(ds_path, mapping_filename)
     csv = pd.read_csv(csv_path)
     
-    helper = SpecgramsHelper(audio_length=44100, spec_shape=[128, 1024], overlap=0.75, sample_rate=22050, mel_downscale=1, ifreq=True, discard_dc=True)
+    # helper = SpecgramsHelper(audio_length=44100, spec_shape=[128, 1024], overlap=0.75, sample_rate=22050, mel_downscale=1, ifreq=True, discard_dc=True)
 
     for index, row in csv.iterrows():
         full_audio_path, full_midi_path = os.path.join(ds_path, row["audio_filename"]), os.path.join(ds_path, row["midi_filename"])
@@ -79,5 +104,6 @@ def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, transfor
         first_song_path = os.path.join(save_path, song_name + "-0.npy")
         
         if not os.path.exists(first_song_path):
-            mel_specs = audio_transformation(full_audio_path, helper, augment_fn, hparams)
-            save_specgrams(mel_specs, save_path, song_name)
+            specs, angles = audio_transformation(full_audio_path, helper, augment_fn, hparams)
+            save_specgrams(specs, save_path, song_name)
+
