@@ -18,7 +18,7 @@
 #SBATCH --cpus-per-task=1
 #
 # Wall clock limit:
-#SBATCH --time=00:00:15
+#SBATCH --time=01:02:00
 #
 ## Command(s) to run (example):
 module load ml/tensorflow/2.5.0-py37 libsndfile
