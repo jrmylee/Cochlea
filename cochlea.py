@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import tensorflow.compat.v1 as tf
 from transformations.spec_helpers import *
-from scipy.io import wavfile
+import librosa
 
 tf.disable_v2_behavior()
 
