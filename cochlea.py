@@ -28,10 +28,10 @@ def save_specgrams(specgrams, save_path, song_name):
 # Librosa Transformations
 def librosa_transformation(file_path, augment_fn, hparams):
     print("Loading song")
-    x, sr = librosa.load(file_path)
+    x, sr = librosa.util.normalize(librosa.load(file_path))
     print("Loaded!")
 
-    chunk_length = 2048 * 20
+    chunk_length = 2048 * 22
     if len(x) % chunk_length != 0:
         multiple = np.ceil(len(x) / chunk_length)
         pad_amount = chunk_length * multiple - len(x)
@@ -40,9 +40,9 @@ def librosa_transformation(file_path, augment_fn, hparams):
     # split in 2 second chunks and export to files 
     arr = []
     angles = []
-    for i in range(0, len(x), 2048 * 20):
-        index = i // (2048 * 20)
-        y = x[i : i + 2048 * 20]
+    for i in range(0, len(x), 2048 * 22):
+        index = i // (2048 * 22)
+        y = x[i : i + 2048 * 22]
         stft = librosa.stft(y)
         mag = np.abs(stft)
         angle = np.angle(stft)
