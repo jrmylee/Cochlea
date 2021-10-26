@@ -28,7 +28,8 @@ def save_specgrams(specgrams, save_path, song_name):
 # Librosa Transformations
 def librosa_transformation(file_path, augment_fn, hparams):
     print("Loading song")
-    x, sr = librosa.util.normalize(librosa.load(file_path))
+    x, sr = librosa.load(file_path)
+    x = librosa.util.normalize(x)
     print("Loaded!")
 
     chunk_length = 2048 * 22
