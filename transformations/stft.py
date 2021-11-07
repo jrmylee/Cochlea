@@ -29,12 +29,12 @@ def istft_tf(stfts, hparams):
         stfts, hparams.win_length, hparams.hop_length, hparams.n_fft
     )
 
-def stft_tf(signals, hparams):
-    return tf.signal.stft(
-        signals,
-        hparams.win_length,
-        hparams.hop_length,
-        hparams.n_fft,
-        pad_end=True,
-        window_fn=tf.signal.hann_window,
-    )
+def stft_tf(x, frame_length, frame_step):
+    pad_amount = 2 * (frame_length - frame_step)
+    x = tf.pad(x, [[pad_amount // 2, pad_amount // 2]], 'REFLECT')
+    
+    f = tf.contrib.signal.frame(x, frame_length, frame_step, pad_end=False)
+    w = tf.contrib.signal.hann_window(frame_length, periodic=True)
+    spectrograms_T = tf.spectral.rfft(f * w, fft_length=[frame_length])
+        
+    return spectrograms_T

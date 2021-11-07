@@ -44,6 +44,11 @@ def librosa_transformation(file_path, augment_fn, hparams):
     for i in range(0, len(x), 2048 * 22):
         index = i // (2048 * 22)
         y = x[i : i + 2048 * 22]
+
+        if augment_fn:
+            length = len(y)
+            y = augment_fn(y)[:length]
+
         stft = librosa.stft(y)
         mag = np.abs(stft)
         angle = np.angle(stft)
@@ -91,12 +96,10 @@ def audio_transformation(file_path, spec_helper, augment_fn, hparams):
 # mapping_filename: filename for csv containing audio track data
 # save_path: path to save directory
 # augment_fn: function to augment audio clips prior to transform.  Optional
-def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, transform_fn, augment_fn, hparams):
+def generate_spectrograms_from_ds(ds_path, mapping_filename, save_path, augment_fn, hparams):
     csv_path = os.path.join(ds_path, mapping_filename)
     csv = pd.read_csv(csv_path)
     
-    # helper = SpecgramsHelper(audio_length=44100, spec_shape=[128, 1024], overlap=0.75, sample_rate=22050, mel_downscale=1, ifreq=True, discard_dc=True)
-
     for index, row in csv.iterrows():
         full_audio_path, full_midi_path = os.path.join(ds_path, row["audio_filename"]), os.path.join(ds_path, row["midi_filename"])
 
