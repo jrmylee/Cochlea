@@ -16,7 +16,6 @@ def get_room_irs(num_rooms=50):
 irs = get_room_irs()
 
 def room_aug(x):
-    print("convolving with room")
     ir = random.choice(irs)
     return convolve_with_room(x, ir)
 

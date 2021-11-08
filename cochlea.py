@@ -1,13 +1,9 @@
-import tensorflow as tf
 import os 
 import numpy as np
 import pandas as pd
-import tensorflow.compat.v1 as tf
-from transformations.spec_helpers import *
 from transformations.stft import nn_stft
 import librosa
 
-tf.disable_v2_behavior()
 
 def group_list(l, group_size):
     """

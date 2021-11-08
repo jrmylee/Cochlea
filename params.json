@@ -12,5 +12,5 @@
     "pad" : true,
     "sr" : 22050,
     "ds_path" : "/global/scratch/users/jrmylee/datasets/maestro-v3.0.0",
-    "save_path" : "/global/scratch/users/jrmylee/preprocessed/original"
+    "save_path" : "/global/scratch/users/jrmylee/preprocessed/echoed"
 }

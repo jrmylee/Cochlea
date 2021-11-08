@@ -1,25 +1,28 @@
 #!/bin/bash
 # Job name:
-#SBATCH --job-name=processing
+#SBATCH --job-name=daniil
 #
 # Account:
 #SBATCH --account=fc_deepmusic
 #
 # Partition:
-#SBATCH --partition=savio
+#SBATCH --partition=savio2_gpu
 #
-# Request one node:
+# Number of nodes:
 #SBATCH --nodes=1
 #
-# Specify number of tasks for use case (example):
-#SBATCH --ntasks-per-node=1
+# Number of tasks (one for each GPU desired for use case) (example):
+#SBATCH --ntasks=1
 #
-# Processors per task:
-#SBATCH --cpus-per-task=1
+# Processors per task (please always specify the total number of processors twice the number of GPUs):
+#SBATCH --cpus-per-task=2
+#
+#Number of GPUs, this can be in the format of "gpu:[1-4]", or "gpu:K80:[1-4] with the type included
+#SBATCH --gres=gpu:1
 #
 # Wall clock limit:
-#SBATCH --time=24:02:00
+#SBATCH --time=24:00:00
 #
 ## Command(s) to run (example):
-module load ml/tensorflow/2.5.0-py37 libsndfile
-python main.py
+module load pytorch/1.0.0-py36-cuda9.0 libsndfile
+python -u main.py

@@ -1,0 +1,181 @@
+STFT kernels created, time used = 0.3294 seconds
+getting room irs
+/global/home/users/jrmylee/.local/lib/python3.6/site-packages/pyroomacoustics/room.py:989: UserWarning: The number of rays used for ray tracing is larger than100000 which may result in slow simulation.  The numberof rays was automatically chosen to provide accurateroom impulse response based on the room volume and thereceiver radius around the microphones.  The number ofrays may be reduced by increasing the size of thereceiver.  This tends to happen especially for largerooms with small receivers.  The receiver is a spherearound the microphone and its radius (in meters) may bespecified by providing the `receiver_radius` keywordargument to the `set_ray_tracing` method.
+  "The number of rays used for ray tracing is larger than"
+beginning preprocess
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
+Loading song
+Loaded!
