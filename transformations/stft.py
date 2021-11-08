@@ -1,6 +1,14 @@
 import librosa
 import tensorflow as tf
+import torch
+from nnAudio import Spectrogram
 import numpy as np
+
+def nn_stft(x, n_fft=2048, hop_length=512, output_format="Magnitude"):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    x = torch.tensor(x, device=device).float()
+    spec_layer = Spectrogram.STFT(n_fft=n_fft, hop_length=hop_length, output_format=output_format)
+    return np.array(spec_layer(x)).squeeze(0)
 
 def stft(y, hparams):
     return librosa.stft(

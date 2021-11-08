@@ -4,20 +4,20 @@ import json
 from types import SimpleNamespace
 import random
 
-print("reading impulses")
+def get_room_irs(num_rooms=50):
+    print("getting room irs")
+    rooms = []
+    for i in range(num_rooms):
+        room = get_random_room()
+        ir = get_room_impulse(room)
+        rooms.append(ir)
+    return rooms
 
-def composed_aug(x, sr):
-    x = apply_noise(x)
-    x = apply_background_sound(x, background_noises)
-    h = random.choice(impulses)
-    y = np.convolve(x, h)
-    y = np.resize(y, len(x))
-    return y
+irs = get_room_irs()
 
 def room_aug(x):
-    room = get_random_room()
-    ir = get_room_impulse(room)
-
+    print("convolving with room")
+    ir = random.choice(irs)
     return convolve_with_room(x, ir)
 
 print("beginning preprocess")
